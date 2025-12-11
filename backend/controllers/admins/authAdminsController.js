@@ -594,11 +594,97 @@ export const extendDueDate = async (req, res) => {
       message: "Extend due date successfully",
       success: true,
     });
-    
+
   } catch (error) {
     return res.status(500).json({
       message: error.message,
       success: false,
     })
+  }
+}
+
+export const issueWalkInBorrow = async (req, res) => {
+  try {
+    const { borrowerName, borrowerContact, bookId, dueDate } = req.body;
+
+    if (!borrowerName || !borrowerContact || !bookId || !dueDate) {
+      return res.status(400).json({
+        message: "All fields are required",
+        success: false,
+      });
+    }
+
+    const book = await findBookById(bookId);
+    if (!book) {
+      return res.status(404).json({
+        message: "Book not found.",
+        success: false,
+      });
+    }
+
+    if (book.copies <= 0) {
+      return res.status(400).json({
+        message: "No copies available",
+        success: false,
+      });
+    }
+
+    // Create a temporary student record for walk-in borrower
+    const tempStudentId = "WALKIN-" + Date.now().toString().slice(-8);
+    const tempStudentResult = await pool.query(
+      `
+        INSERT INTO students (name, email, student_id, password, role, status)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id
+      `,
+      [borrowerName, `${tempStudentId}@walkin.local`, tempStudentId, 'temp_password', 'walkin', 'active']
+    );
+
+    const studentId = tempStudentResult.rows[0].id;
+
+    const borrowCode = "WALKIN-" + Date.now().toString().slice(-6);
+    const qrData = JSON.stringify({
+      type: "walkin",
+      borrowerName,
+      borrowerContact,
+      bookTitle: book.title,
+      borrowCode,
+      dueDate,
+      issuedDate: new Date().toISOString()
+    });
+
+    const record = await pool.query(
+      `
+        INSERT INTO borrow_records (student_id, book_id, due_date, borrow_code, qr_code, status)
+        VALUES ($1, $2, $3, $4, $5, 'borrowed')
+        RETURNING *
+      `, [studentId, bookId, dueDate, borrowCode, qrData]
+    );
+
+    await pool.query(
+      "UPDATE books SET copies = copies - 1 WHERE id = $1", [bookId]
+    );
+
+    res.status(201).json({
+      message: "Book issued to walk-in borrower successfully!",
+      success: true,
+      record: record.rows[0],
+      receipt: {
+        borrow_code: borrowCode,
+        borrower_name: borrowerName,
+        borrower_contact: borrowerContact,
+        book_title: book.title,
+        due_date: dueDate,
+        issued_date: record.rows[0].borrow_date,
+      }
+    });
+
+  } catch (error) {
+    console.log("Issue walk-in borrow error:", error);
+    return res.status(500).json({
+      message: "Failed to issue book to walk-in borrower",
+      success: false,
+      error: error.message,
+    });
   }
 }

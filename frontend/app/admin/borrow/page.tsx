@@ -3,10 +3,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import Sidebar from "@/components/layout/admin/SidebarAdmin";
 import Header from "@/components/layout/admin/HeaderAdmin";
-import { ChevronRight, MoreVertical, ScanQrCode, MoreHorizontal } from "lucide-react";
+import { ChevronRight, ScanQrCode, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/lib/api";
-import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import BorrowMoreModal from "@/components/borrow/BorrowMoreModal";
 import ScanBorrowQr, {ScanBorrowQrHandles} from "@/components/ScanBorrowQr";
 
@@ -32,10 +32,10 @@ export default function BorrowBookPage() {
   const [returnedSubmitted, setReturnedSubmitted] = useState(false);
   const [overdueSubmitted, setOverdueSubmitted] = useState(false);
   const [extendDueDateValue, setExtendDueDateValue] = useState("");
-  const [open, setOpen] = useState(false);
-  
+
   const scannerRef = useRef<ScanBorrowQrHandles>(null);
-  const [scannerOpen, setScannerOpen] = useState(false);
+
+
 
   // Fetch borrowed history
   useEffect(() => {
@@ -111,6 +111,8 @@ export default function BorrowBookPage() {
       console.log(error);
     }
   };
+
+
 
   return (
     <div className="flex-col md:flex-row flex h-screen overflow-hidden">
