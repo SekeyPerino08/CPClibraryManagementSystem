@@ -35,6 +35,7 @@ const Books = () => {
   const [openSideBar, setOpenSideBar] = React.useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
 
 
@@ -64,6 +65,11 @@ const Books = () => {
   }, []);
 
   const [bookLimitMap, setBookLimitMap] = useState(5);
+
+  // Filter books based on selected category
+  const filteredBooks = selectedCategory
+    ? books.filter((book) => book.course === selectedCategory)
+    : books;
 
   const handleAddBookSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -156,6 +162,8 @@ const Books = () => {
               <select
                 name="course_category"
                 id="course_category"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
                 className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white text-sm min-w-[140px] cursor-pointer hover:bg-gray-100"
               >
                 <option value="" className="text-gray-500">
@@ -181,7 +189,7 @@ const Books = () => {
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold">
-              All Books: {books.length}
+              Books: {filteredBooks.length}
             </h2>
             <div className="flex gap-2">
               <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
@@ -310,7 +318,7 @@ const Books = () => {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-4">
-                {books.slice(0, bookLimitMap).map((book) => (
+                {filteredBooks.slice(0, bookLimitMap).map((book) => (
                   <Dialog key={book.id}>
                     <DialogTrigger>
                       <div>

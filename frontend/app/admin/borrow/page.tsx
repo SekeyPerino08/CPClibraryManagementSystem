@@ -31,6 +31,7 @@ export default function BorrowBookPage() {
   const [borrowedSubmitted, setBorrowedSubmitted] = useState(false);
   const [returnedSubmitted, setReturnedSubmitted] = useState(false);
   const [overdueSubmitted, setOverdueSubmitted] = useState(false);
+  const [missingSubmitted, setMissingSubmitted] = useState(false);
   const [extendDueDateValue, setExtendDueDateValue] = useState("");
 
   const scannerRef = useRef<ScanBorrowQrHandles>(null);
@@ -67,6 +68,7 @@ export default function BorrowBookPage() {
     if (borrowedStatus === "borrowed") setBorrowedSubmitted(true);
     if (borrowedStatus === "returned") setReturnedSubmitted(true);
     if (borrowedStatus === "overdue") setOverdueSubmitted(true);
+    if (borrowedStatus === "missing") setMissingSubmitted(true);
 
     try {
       await api.post("/api/admins/set-student-borrowed-status", { borrowedStatus, borrowId });
@@ -76,6 +78,7 @@ export default function BorrowBookPage() {
       if (borrowedStatus === "borrowed") setBorrowedSubmitted(false);
       if (borrowedStatus === "returned") setReturnedSubmitted(false);
       if (borrowedStatus === "overdue") setOverdueSubmitted(false);
+      if (borrowedStatus === "missing") setMissingSubmitted(false);
 
       toast.error("Error in setting book status");
       console.log(error);
@@ -169,6 +172,8 @@ export default function BorrowBookPage() {
                         ? "text-green-700"
                         : book.status === "overdue"
                         ? "text-red-700"
+                        : book.status === "missing"
+                        ? "text-orange-700"
                         : "text-blue-700"
                     }`}
                   >
@@ -186,6 +191,7 @@ export default function BorrowBookPage() {
                         borrowedSubmitted={borrowedSubmitted}
                         returnedSubmitted={returnedSubmitted}
                         overdueSubmitted={overdueSubmitted}
+                        missingSubmitted={missingSubmitted}
                         BorrowedOnClick={() => {
                           if (book.status === "borrowed") {
                             toast.error("This book is already marked as borrowed.");
@@ -206,6 +212,13 @@ export default function BorrowBookPage() {
                             return;
                           }
                           setStudentBorrowedStatus(book.borrow_id, "overdue");
+                        }}
+                        MissingOnClick={() => {
+                          if (book.status === "missing") {
+                            toast.error("This book is already marked as missing.");
+                            return;
+                          }
+                          setStudentBorrowedStatus(book.borrow_id, "missing");
                         }}
                         dueDateValue={extendDueDateValue}
                         onDueDateChange={setExtendDueDateValue}

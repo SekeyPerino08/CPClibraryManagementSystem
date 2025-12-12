@@ -17,10 +17,12 @@ interface BorrowMoreProps {
   borrowedSubmitted: boolean,
   returnedSubmitted: boolean,
   overdueSubmitted: boolean,
+  missingSubmitted: boolean,
 
   BorrowedOnClick: () => void,
   ReturnedOnClick: () => void,
   OverdueOnClick: () => void,
+  MissingOnClick: () => void,
 
   dueDateValue: string,
   onDueDateChange: (value: string) => void,
@@ -30,7 +32,7 @@ interface BorrowMoreProps {
   isOverDue: boolean
 }
 
-export default function BorrowMoreModal({isOverDue, penaltyValue, extendSubmitted ,borrowedSubmitted, returnedSubmitted, overdueSubmitted, BorrowedOnClick, ReturnedOnClick, OverdueOnClick, dueDateValue, onDueDateChange, ExtendOnClick, }: BorrowMoreProps) {
+export default function BorrowMoreModal({isOverDue, penaltyValue, extendSubmitted ,borrowedSubmitted, returnedSubmitted, overdueSubmitted, missingSubmitted, BorrowedOnClick, ReturnedOnClick, OverdueOnClick, MissingOnClick, dueDateValue, onDueDateChange, ExtendOnClick, }: BorrowMoreProps) {
   return (
     <div>
       <DialogContent>
@@ -47,7 +49,7 @@ export default function BorrowMoreModal({isOverDue, penaltyValue, extendSubmitte
             <h1 className="text-sm font-semibold">
               Set students borrow status
             </h1>
-            <div className="flex justify-between">
+            <div className="flex flex-wrap gap-2">
               <ButtonSubmit
                 props={{
                   submitted: borrowedSubmitted,
@@ -81,6 +83,18 @@ export default function BorrowMoreModal({isOverDue, penaltyValue, extendSubmitte
                   btnText: "Set To Overdue",
                   btnLoadingText: "Setting To Overdue",
                   btnOnClick: OverdueOnClick
+                }}
+              />
+
+              <ButtonSubmit
+                props={{
+                  submitted: missingSubmitted,
+                  buttonType: "submit",
+                  className:
+                    "bg-orange-600 hover:bg-orange-700 text-white rounded-lg",
+                  btnText: "Set To Missing",
+                  btnLoadingText: "Setting To Missing",
+                  btnOnClick: MissingOnClick
                 }}
               />
             </div>
