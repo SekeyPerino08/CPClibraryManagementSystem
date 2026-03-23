@@ -2,7 +2,7 @@ import express from 'express';
 import { registerStudentsController } from '../controllers/students/studentsController.js';
 import {fetchStudents ,loginStudentController, forgotPasswordStudentsController, registerStudentRequestController, verifyStudentOtpController, finalRegisterStudentController, resetPasswordStudentsController, logoutStudent, findStudent, updateProfile } from '../controllers/students/authStudentsController.js';
 import { jwtAuthenticate, refreshToken, verifyStudentToken } from '../middleware/authMiddleware.js';
-import { uploadProfile } from '../utils/cloudinary.js';
+import { uploadProfile } from '../utils/local_storage.js';
 
 const router = express.Router();
 

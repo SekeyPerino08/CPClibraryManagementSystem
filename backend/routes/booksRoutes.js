@@ -1,7 +1,7 @@
 import express from 'express';
 import { addBook, borrowBook, fetchBooks, getAllBorrowed, getMyBorrowed, scanBorrowQr } from '../controllers/books/authBooksController.js';
 import { jwtAuthenticate } from '../middleware/authMiddleware.js';
-import { uploadBook } from '../utils/cloudinary.js';
+import { uploadBook } from '../utils/local_storage.js';
 
 const router = express.Router();
 

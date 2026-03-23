@@ -9,7 +9,7 @@ import { pool } from "../../db.js";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt.js";
 import { relations } from "drizzle-orm";
 import { getAllStudents } from "../../models/studentsModel.js";
-import { cloudinary, uploadProfile } from "../../utils/cloudinary.js";
+// import { cloudinary, uploadProfile } from "../../utils/cloudinary.js";
 
 export const fetchStudents = async (req, res) => {
   try {
@@ -421,11 +421,11 @@ export const findStudent = async (req, res) => {
 }
 
 const DEFAULT_PROFILE_CONFIG = {
-  url: process.env.STOCK_PROFILE_URL,
-  public_id: 'default-profile-picture'
+  url: 'http://localhost:8080/uploads/defaults/default-profile.jpg',
+  public_id: 'default-profile.jpg'
 }
 
-const processStockProfile = async (req) => {
+const processStockProfile = (req) => {
   if (!req.file) {
     return {
       url: DEFAULT_PROFILE_CONFIG.url,
@@ -434,27 +434,14 @@ const processStockProfile = async (req) => {
     }
   }
 
-  try {
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "profiles",
-      public_id: `${Date.now()}-${req.file.originalname}`,
-      overwrite: true,
-    });
-
-    return {
-      url: result.secure_url,
-      public_id: result.public_id,
-      isDefault: false,
-    };
-  } catch (error) {
-    console.error("Cloudinary upload failed:", error);
-    return {
-      url: DEFAULT_PROFILE_CONFIG.url,
-      public_id: DEFAULT_PROFILE_CONFIG.public_id,
-      isDefault: true,
-    }
-  }
-}
+  const filename = req.file.filename;
+  const url = `http://localhost:8080/uploads/profiles/${filename}`;
+  return {
+    url,
+    public_id: filename,
+    isDefault: false,
+  };
+};
 
 export const updateProfile = async (req, res) => {
   const studentId = req.user.id;

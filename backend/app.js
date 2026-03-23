@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import path from "path";
 import studentsRoutes from './routes/studentsRoutes.js';
 import adminsRoutes from './routes/adminsRoutes.js'
 import booksRoutes from './routes/booksRoutes.js'
@@ -16,9 +17,10 @@ app.use(cors({
   credentials: true,
 }));
 app.use(cookieParser());
+app.use('/uploads', express.static(path.join(process.cwd(), 'public/uploads')));
 
 app.get('/', (req, res) => {
-  res("hi");
+  res.send("hi");
 })
 
 app.use('/api', studentsRoutes);

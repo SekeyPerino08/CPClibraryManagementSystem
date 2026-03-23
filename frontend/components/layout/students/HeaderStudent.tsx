@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import { Home, Book, LogOut, Menu, Search, UserCircle } from "lucide-react";
 import { useState } from "react";
-import Cpc from '@/../public/cpc-logo.png';
+import Cpc from '@/public/cpc-logo.png';
 import { toast } from "sonner";
 import api from "@/lib/api";
 
@@ -42,7 +42,7 @@ export default function Header() {
           {/* <BookOpen className="w-8 h-8"/> */}
           <img src={Cpc.src} alt="Cpc Logo" className="w-10 h-10 border-white border-2 rounded-full"/>
             <div className="flex flex-col">
-              <h1 className="text-xl font-semibold">CPC Libray</h1>
+CPC Library
               <p className="text-xs text-indigo-300">Admin Panel</p>
             </div>
         </div>

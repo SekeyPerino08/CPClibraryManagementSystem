@@ -11,7 +11,7 @@ import {
   Search,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import Cpc from "@/../public/cpc-logo.png";
+import Cpc from "@/public/cpc-logo.png";
 import { toast } from "sonner";
 import api from "@/lib/api";
 import { ButtonSubmit } from "../../button";

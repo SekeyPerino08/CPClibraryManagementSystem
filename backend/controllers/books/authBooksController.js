@@ -28,9 +28,11 @@ const processBookCover = (req) => {
     };
   };
 
+  const filename = req.file.filename;
+  const url = `http://localhost:8080/uploads/books/${filename}`;
   return {
-    url: req.file.path,
-    public_id: req.file.filename,
+    url,
+    public_id: filename,
     isDefault: false,
   };
 };
